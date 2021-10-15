@@ -199,5 +199,7 @@ for (var i = 0; i < menus_item_child.length; i++) {
     animation: gradientBG 15s ease infinite;
 }
 
+backdrop-filter: blur(3px);
+
 
 
